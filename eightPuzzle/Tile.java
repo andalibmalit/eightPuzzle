@@ -16,7 +16,7 @@ package eightPuzzle;
  * They store important information such as coordinates and location,
  * and have methods to update said info after a Tile is moved.
  * </p>
- * @author Andalib Malit Samandari
+ * @author A.M.S., 2018
  * @version 3.2
  */
 public class Tile {

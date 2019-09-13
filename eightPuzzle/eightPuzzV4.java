@@ -20,7 +20,7 @@ printBoard() (probably needs separate class with printf() formatting)
 /**
  * This is a simple n-puzzle game, just compile and run. Instructions print on screen.
  * Private methods of eightPuzzV4 class are documented for personal reference.
- * @author Andalib Malit Samandari, 2018
+ * @author A.M.S., 2018
  * @version 4.2
  */
 public class eightPuzzV4 {
