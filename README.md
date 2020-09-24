@@ -1,5 +1,5 @@
 # n-puzzle
-n-puzzle game in Java
+<i>n-puzzle game in Java</i>
 
 This program allows you to generate and play a 3x3 or 4x4 n-puzzle. Feel free to try and break it - but if you do, I can't guarantee other size puzzles are solveable!
 
