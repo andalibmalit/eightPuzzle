@@ -5,4 +5,7 @@ This program allows you to generate and play a 3x3 or 4x4 n-puzzle. Feel free to
 
 ## How to run
 Clone the repo locally, then navigate to `src` and run `java eightPuzzle.eightPuzzV4`
+
+
+## Documentation
 You can view code comments in the `.java` files.
