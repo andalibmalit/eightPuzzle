@@ -1,6 +1,5 @@
 # Compiled class file
 *.class
-src/eightPuzzle/*.class
 
 # Log file
 *.log
