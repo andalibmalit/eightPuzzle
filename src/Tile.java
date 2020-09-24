@@ -1,11 +1,11 @@
+package eightPuzzle;
+
 /**
  * This package is comprised of two classes.
  * eightPuzzV4 is the main class, and Tile is a helper class.
  *
  * @since 2.0
  */
-
-package eightPuzzle;
 
 //FINISH THIS CLASS; needs to account for variable dimensions. Currently only works for 3 by 3
 //Fix sqValue calculation and move()

@@ -1,3 +1,5 @@
+package eightPuzzle;
+
 /**
  * This package is comprised of two classes.
  * eightPuzzV4 is the main class, and Tile is a helper class.
@@ -5,11 +7,12 @@
  * @since 2.0
  */
 
-package eightPuzzle;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Scanner;
 
-import java.util.*;
-import static java.lang.Math.sqrt;
 import static java.lang.Integer.valueOf;
+import static java.lang.Math.sqrt;
 
 /*
 NEEDS FIXING:
@@ -61,8 +64,8 @@ public class eightPuzzV4 {
         final int DIM = valueOf(num);
 
         //Generates a puzzle and a solved version to check it against.
-        ArrayList<Tile> tiles = generate(DIM);
-        ArrayList<Tile> ansKey = getKey(DIM);
+        ArrayList<eightPuzzle.Tile> tiles = generate(DIM);
+        ArrayList<eightPuzzle.Tile> ansKey = getKey(DIM);
 
         int[][] board = new int[DIM][DIM];
         int[][] key = new int[DIM][DIM];
@@ -90,7 +93,7 @@ public class eightPuzzV4 {
      * @return  an ArrayList of Tiles which will store the data for each Tile object in the puzzle
      * @see #chkInversions(ArrayList, int)
      */
-    private static ArrayList<Tile> generate(int n) {
+    private static ArrayList<eightPuzzle.Tile> generate(int n) {
         ArrayList<int[]> poss = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -100,12 +103,12 @@ public class eightPuzzV4 {
                 poss.add(coord);
             }
         }
-        ArrayList<Tile> tiles;
+        ArrayList<eightPuzzle.Tile> tiles;
         do {
             Collections.shuffle(poss);
             tiles = new ArrayList<>();
             for (int z = 0; z < n * n - 1; z++) {
-                tiles.add(new Tile(z + 1, n, (poss.get(z))));
+                tiles.add(new eightPuzzle.Tile(z + 1, n, (poss.get(z))));
             }
         } while (!chkInversions(tiles, n));
         return tiles;
@@ -118,7 +121,7 @@ public class eightPuzzV4 {
      * @param n int used to determine if number of rows is even or odd
      * @return true if number of inversions in puzzle makes it solvable
      */
-    private static boolean chkInversions(ArrayList<Tile> tiles, int n) {
+    private static boolean chkInversions(ArrayList<eightPuzzle.Tile> tiles, int n) {
         if (n % 2 != 0) {
             int q = 0;
             for (int i = 0; i < tiles.size() - 1; i++)
@@ -131,7 +134,7 @@ public class eightPuzzV4 {
             return q % 2 == 0;
         } else {
             ArrayList<int[]> tempCoords = new ArrayList<>();
-            for (Tile t : tiles) {
+            for (eightPuzzle.Tile t : tiles) {
                 tempCoords.add(t.getCoords());
             }
             ArrayList<int[]> tempCompare = new ArrayList<>();
@@ -178,13 +181,13 @@ public class eightPuzzV4 {
      * @return  an ArrayList of Tile objects containing the coordinates they will each have when puzzle is solved
      * @see #solved(ArrayList, ArrayList, int)
      */
-    private static ArrayList<Tile> getKey(int n) {
-        ArrayList<Tile> tiles = new ArrayList<>();
+    private static ArrayList<eightPuzzle.Tile> getKey(int n) {
+        ArrayList<eightPuzzle.Tile> tiles = new ArrayList<>();
         for (int k = 1; k <= n * n - 1; k++) {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     int[] c = {i, j};
-                    tiles.add(new Tile(k, n, c));
+                    tiles.add(new eightPuzzle.Tile(k, n, c));
                     k++;
                 }
             }
@@ -199,8 +202,8 @@ public class eightPuzzV4 {
      * @param tiles ArrayList of Tile objects where coordinates are synced to
      * @see #runGame(ArrayList, ArrayList, int[][], int[][], int)
      */
-    private static void update(int[][] board, ArrayList<Tile> tiles) {
-        for (Tile t : tiles) {
+    private static void update(int[][] board, ArrayList<eightPuzzle.Tile> tiles) {
+        for (eightPuzzle.Tile t : tiles) {
             board[t.x()][t.y()] = t.getNum();
             t.updateLay(board);
         }
@@ -238,7 +241,7 @@ public class eightPuzzV4 {
      * @param key   int[][] which is used to display how solved puzzle will look
      * @param tileMax   int passed to solved() to limit number of iterations; represents highest Tile number
      */
-    private static void runGame(ArrayList<Tile> tiles, ArrayList<Tile> ansKey, int[][] board, int[][] key, int tileMax) {
+    private static void runGame(ArrayList<eightPuzzle.Tile> tiles, ArrayList<eightPuzzle.Tile> ansKey, int[][] board, int[][] key, int tileMax) {
         int DIM = (int)sqrt(tileMax+1);
         Scanner readIn = new Scanner(System.in);
         do {
@@ -282,7 +285,7 @@ public class eightPuzzV4 {
      * @param max   int representing total number of Tile objects
      * @return  true if the coordinates stored in curr Tiles and ans Tiles are the same
      */
-    private static boolean solved(ArrayList<Tile> curr, ArrayList<Tile> ans, int max) {
+    private static boolean solved(ArrayList<eightPuzzle.Tile> curr, ArrayList<eightPuzzle.Tile> ans, int max) {
         int n = 0;
         for (int i = 0; i < max; i++) {
             int x = curr.get(i).x();
