@@ -8,7 +8,7 @@ package npuzzle;
  */
 
 //FINISH THIS CLASS; needs to account for variable dimensions. Currently only works for 3 by 3
-//Fix sqValue calculation and move()
+//Fix sqNum calculation and move()
 
 /**
  * <p>
@@ -20,16 +20,16 @@ package npuzzle;
  * @version 5.0
  */
 public class Tile {
-    private int number, dim, sqValue;
+    private int number, dim, sqNum;
     private int[] coords = new int[2];
     private int[][] layout = null;
 
     /**
      * sole constructor for a Tile object
      * @param z the number assigned the Tile to be displayed on the puzzle board
-     * @param n    the dimensions of the, n*n, are used to calculate sqValue
+     * @param n    the dimensions of the, n*n, are used to calculate sqNum
      * @param c pair of ints used to set initial coordinates of Tile
-     * @see #calcSqValue()
+     * @see #calcSqNum()
      * @see #newCoords(int[])
      */
     Tile(int z, int n, int[] c) {
@@ -62,11 +62,11 @@ public class Tile {
     }
 
     /**
-     * sqValue tracks which "square" (spot in the 2D array) the Tile is linked to. Squares are numbered from left to right and top to bottom.
+     * sqNum tracks which "square" (spot in the 2D array) the Tile is linked to. Squares are numbered from left to right and top to bottom.
      * @return int, which square (from 1 - n*n) the Tile is on
      */
-    public int getSqValue() {
-        return sqValue;
+    public int getSqNum() {
+        return sqNum;
     }
 
     /**
@@ -113,15 +113,15 @@ public class Tile {
     // Internal mechanics
     private void newCoords(int[] newC) {
         coords = newC;
-        calcSqValue();
+        calcSqNum();
     }
 
-    private void calcSqValue() {
+    private void calcSqNum() {
         if (coords[0] == 0)
-            sqValue = coords[1] + 1;
+            sqNum = coords[1] + 1;
         else if (coords[1] == 0)
-            sqValue = coords[0] * dim + 1;
-        else sqValue = coords[0] * dim + coords[1] + 1;
+            sqNum = coords[0] * dim + 1;
+        else sqNum = coords[0] * dim + coords[1] + 1;
     }
 
     // Testing purposes

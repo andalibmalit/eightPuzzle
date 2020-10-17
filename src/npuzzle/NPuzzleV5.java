@@ -82,7 +82,7 @@ public class NPuzzleV5 {
         update(key, ansKey);
 
         // Instructions
-        System.out.println("Welcome to the " + (num -1)
+        System.out.println("Welcome to the " + (num - 1)
                 + " Puzzler! \n\n RULES: \n 1) Move the numbered tiles on the board \n\t until they are in order from 1-"
                 + (DIM * DIM - 1) + ". \n\t It will look like this: ");
         printBoard(key);
@@ -110,21 +110,21 @@ public class NPuzzleV5 {
      * @see #chkInversions(ArrayList, int)
      */
     private static ArrayList<npuzzle.Tile> generate(int n) {
-        ArrayList<int[]> poss = new ArrayList<>();
+        ArrayList<int[]> possib = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 int[] coord = new int[2];
                 coord[0] = i;
                 coord[1] = j;
-                poss.add(coord);
+                possib.add(coord);
             }
         }
         ArrayList<npuzzle.Tile> tiles;
         do {
-            Collections.shuffle(poss);
+            Collections.shuffle(possib);
             tiles = new ArrayList<>();
-            for (int z = 0; z < n * n - 1; z++) {
-                tiles.add(new npuzzle.Tile(z + 1, n, (poss.get(z))));
+            for (int z = 0; z < (n * n - 1); z++) {
+                tiles.add(new npuzzle.Tile(z + 1, n, (possib.get(z))));
             }
         } while (!chkInversions(tiles, n));
         return tiles;
@@ -134,23 +134,22 @@ public class NPuzzleV5 {
      * method that determines if the generated puzzle is solvable by calculating
      * inversions
      * 
-     * @see <a href=
-     *      "https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable"></a>
      * @param tiles the ArrayList of Tile objects being checked for solvability
      * @param n     int used to determine if number of rows is even or odd
      * @return true if number of inversions in puzzle makes it solvable
+     * @see #npuzzle.Tile.getSqNum()
      */
     private static boolean chkInversions(ArrayList<npuzzle.Tile> tiles, int n) {
         if (n % 2 != 0) {
-            int q = 0;
-            for (int i = 0; i < tiles.size() - 1; i++)
-                for (int j = i + 1; j < tiles.size(); j++) {
-                    int t = (tiles.get(i)).getSqValue();
-                    int c = (tiles.get(j)).getSqValue();
-                    if (t > c)
-                        q++;
+            int invs = 0;
+            for (int i = 0; i < (tiles.size() - 1); i++)
+                for (int j = i + 1; j < (tiles.size()); j++) {
+                    int tile1SqNum = (tiles.get(i)).getSqNum();
+                    int tile2SqNum = (tiles.get(j)).getSqNum();
+                    if (tile1SqNum > tile2SqNum)
+                        invs++;
                 }
-            return q % 2 == 0;
+            return (q % 2 == 0);
         } else {
             ArrayList<int[]> tempCoords = new ArrayList<>();
             for (npuzzle.Tile t : tiles) {
@@ -164,32 +163,46 @@ public class NPuzzleV5 {
                 }
             }
             int emptyX = 0;
-            for (int[] arr : tempCompare) {
-                if (!tempCoords.contains(arr)) {
-                    emptyX = arr[0];
+            for (int[] oddOneOut : tempCompare) {
+                if (!tempCoords.contains(oddOneOut)) {
+                    emptyX = oddOneOut[0];
                 }
             }
+
+            //unit test
+            for (int[] arr : tempCoords){
+                System.out.println("real coordinates");
+                System.out.println(arr);
+            }
+            for (int[] arr : tempCompare){
+                System.out.println("all possible coordinates");
+                System.out.println(arr);
+            }
+            System.out.println("x coord of empty spot";)
+            System.out.println(emptyX);
+
             // if empty spot is an even distance from bottom
             if ((n - emptyX + 1) % 2 == 0) {
                 int q = 0;
-                for (int i = 0; i < tiles.size() - 1; i++)
+                for (int i = 0; i < (tiles.size() - 1); i++)
                     for (int j = i + 1; j < tiles.size(); j++) {
-                        int t = (tiles.get(i)).getSqValue();
-                        int c = (tiles.get(j)).getSqValue();
-                        if (t > c)
+                        int tile1SqNum = (tiles.get(i)).getSqNum();
+                        int tile2SqNum = (tiles.get(j)).getSqNum();
+                        if (tile1SqNum > tile2SqNum)
                             q++;
                     }
-                return q % 2 != 0;
+                return (q % 2) != 0;
             } else {
                 int q = 0;
-                for (int i = 0; i < tiles.size() - 1; i++)
+                for (int i = 0; i < (tiles.size() - 1); i++)
                     for (int j = i + 1; j < tiles.size(); j++) {
-                        int t = (tiles.get(i)).getSqValue();
-                        int c = (tiles.get(j)).getSqValue();
-                        if (t > c)
+                        int tile1SqNum = (tiles.get(i)).getSqNum();
+                        int tile2SqNum = (tiles.get(j)).getSqNum();
+                        if (tile1SqNum > tile2SqNum)
                             q++;
-                    }
-                return q % 2 == 0;
+                    }     q++;
+                return (q % 2) == 0;
+            }
             }
         }
     }
