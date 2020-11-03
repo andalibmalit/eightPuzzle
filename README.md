@@ -32,4 +32,5 @@ According to the formula for inversion-based solvability:
 
 Thus the given example is solvable by the first set of criteria above.
 
+
 See **chkInversions()** method comments for details on how I implemented this algorithm. 
