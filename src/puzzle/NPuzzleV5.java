@@ -42,7 +42,7 @@ public class NPuzzleV5 {
             try {
                 size = scan.nextInt();
                 if (size > 1){
-                    puzzle(size);
+                    puzzleGame(size);
                     puzzleExec = true;
                 } else {
                     System.out.print("Invalid input! Enter an integer n>1: ");
@@ -60,7 +60,7 @@ public class NPuzzleV5 {
      * @param num   the int that controls the generated square puzzle's dimensions
      * @see #runGame(ArrayList, ArrayList, int[][], int[][], int)
      */
-    private static void puzzle(int num) {
+    private static void puzzleGame(int num) {
 
         final int DIM = valueOf(num);
 
@@ -84,7 +84,7 @@ public class NPuzzleV5 {
         runGame(tiles, ansKey, board, key, DIM * DIM - 1);
 
         // Display random celebration comment after game is won
-        System.out.println(celebrate().get(0));
+        System.out.println(celebrate());
 
     }
 
@@ -128,7 +128,7 @@ public class NPuzzleV5 {
         } 
         // If matrix width is even
         else {
-            // Populate the set of all possible square that can hold a Tile
+            // Populate the set of all possible squares that can hold a Tile
             ArrayList<Integer> allSquares = new ArrayList<>();
             for (int i = 1; i <= (n * n); i++){
                     allSquares.add((Integer) i);
@@ -310,7 +310,7 @@ public class NPuzzleV5 {
      * celebration lines to celebrate solving the puzzle
      * @return a random String from ArrayList of celebratory one-liners
      */
-    private static ArrayList<String> celebrate() {
+    private static String celebrate() {
         ArrayList<String> winner = new ArrayList<>();
         winner.add("Winner, winner, chicken dinner! (Unless you're vegetarian, we have tofu options)");
         winner.add("Huzzah!");
@@ -319,6 +319,6 @@ public class NPuzzleV5 {
         winner.add("Felicitations.");
         winner.add("Noice!");
         Collections.shuffle(winner);
-        return winner;
+        return winner.get(0);
     }
 }
