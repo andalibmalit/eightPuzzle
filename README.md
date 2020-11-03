@@ -19,7 +19,7 @@ The crux of this program is the method **chkInversions()**, which ensures that e
 
 |  1  |  3  |  5  |
 
-### 1-D visualization
+### 1-D notation
 [7, 4, 6, 8, 2, 1, 3, 5]
 
 *Inversion count: 18*
