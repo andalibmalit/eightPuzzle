@@ -1,14 +1,11 @@
-package eightPuzzle;
+package puzzle;
 
 /**
  * This package is comprised of two classes.
- * eightPuzzV4 is the main class, and Tile is a helper class.
+ * NPuzzleV5 is the main class, and Tile is a helper class.
  *
  * @since 2.0
  */
-
-//FINISH THIS CLASS; needs to account for variable dimensions. Currently only works for 3 by 3
-//Fix sqValue calculation and move()
 
 /**
  * <p>
@@ -16,26 +13,26 @@ package eightPuzzle;
  * They store important information such as coordinates and location,
  * and have methods to update said info after a Tile is moved.
  * </p>
- * @author A.M.S., 2018
- * @version 3.2
+ * @author A.M.S., 2020
+ * @version 5.0
  */
 public class Tile {
-    private int number, dim, sqValue;
+    private int number, dim, sqNum;
     private int[] coords = new int[2];
     private int[][] layout = null;
 
     /**
      * sole constructor for a Tile object
      * @param z the number assigned the Tile to be displayed on the puzzle board
-     * @param n    the dimensions of the, n*n, are used to calculate sqValue
-     * @param coord pair of ints used to set initial coordinates of Tile
-     * @see #CalcSqValue()
+     * @param n    the dimensions of the, n*n, are used to calculate sqNum
+     * @param c pair of ints used to set initial coordinates of Tile
+     * @see #calcSqNum()
      * @see #newCoords(int[])
      */
-    Tile(int z, int n, int[] coord) {
+    Tile(int z, int n, int[] coords) {
         number = z;
         dim = n;
-        newCoords(coord);
+        newCoords(coords);
     }
 
     // Getters
@@ -62,11 +59,11 @@ public class Tile {
     }
 
     /**
-     * sqValue tracks which "square" (spot in the 2D array) the Tile is linked to. Squares are numbered from left to right and top to bottom.
+     * sqNum tracks which "square" (spot in the 2D array) the Tile is linked to. Squares are numbered from left to right and top to bottom.
      * @return int, which square (from 1 - n*n) the Tile is on
      */
-    public int getSqValue() {
-        return sqValue;
+    public int getSqNum() {
+        return sqNum;
     }
 
     /**
@@ -79,7 +76,7 @@ public class Tile {
 
     // Setters
     /**
-     * Each Tile object stores a copy of the game board to determine if moving said Tile object is legal.
+     * Each Tile object stores a copy of the current game board state to determine if moving said Tile object is legal.
      * @param newLay    an int[][] representing the game board, 0 means that spot is empty
      */
     public void updateLay(int[][] newLay) {
@@ -110,18 +107,18 @@ public class Tile {
         } else return false;
     }
 
-    // Internal mechanics
+    // Find the new sqNum whenever a Tile is moved
     private void newCoords(int[] newC) {
         coords = newC;
-        CalcSqValue();
+        calcSqNum();
     }
 
-    private void CalcSqValue() {
+    private void calcSqNum() {
         if (coords[0] == 0)
-            sqValue = coords[1] + 1;
+            sqNum = coords[1] + 1;
         else if (coords[1] == 0)
-            sqValue = coords[0] * dim + 1;
-        else sqValue = coords[0] * dim + coords[1] + 1;
+            sqNum = coords[0] * dim + 1;
+        else sqNum = coords[0] * dim + coords[1] + 1;
     }
 
     // Testing purposes

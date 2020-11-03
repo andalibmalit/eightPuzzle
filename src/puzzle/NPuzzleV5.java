@@ -1,56 +1,58 @@
-package eightPuzzle;
+package puzzle;
 
 /**
  * This package is comprised of two classes.
- * eightPuzzV4 is the main class, and Tile is a helper class.
+ * NPuzzleV5 is the main class, and Tile is a helper class.
  *
  * @since 2.0
  */
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import static java.lang.Integer.valueOf;
 import static java.lang.Math.sqrt;
 
-/*
-NEEDS FIXING:
-chkInversions for even DIM
-printBoard() (probably needs separate class with printf() formatting)
- */
-
 /**
- * This is a simple n-puzzle game, just compile and run. Instructions print on screen.
- * Private methods of eightPuzzV4 class are documented for personal reference.
- * @author A.M.S., 2018
- * @version 4.2
+ * This is a simple n-puzzle game, just compile and run. Instructions print on
+ * screen. Private methods of NPuzzleV5 class are documented for personal
+ * reference.
+ * 
+ * @author A.M.S., 2020
+ * @version 5.0
  */
-public class eightPuzzV4 {
+public class NPuzzleV5 {
     /**
      * main method, doesn't accept any parameters
-     * @param foo   N/A
+     * 
+     * @param foo N/A
      * @see #puzzle(int)
      */
     public static void main(String[] foo) {
+        boolean puzzleExec = false;
         int size = 0;
-        Scanner scan;
+        String contd = "N";
+        Scanner scan = new Scanner(System.in);
+
         System.out.println("What size puzzle (n * n) would you like to solve?");
-
-        boolean puzzleStart = false;
-
-        do {
-          scan = new Scanner(System.in);
-          System.out.print("Enter an integer 3 >= n >= 4: ");
-          if (scan.hasNextInt()){
-            size = scan.nextInt();
-            puzzleStart = true;
-            if (size<3 || size>4) puzzleStart = false;
+        System.out.print("Enter an integer n>1: ");
+        
+        while(!puzzleExec){
+            try {
+                size = scan.nextInt();
+                if (size > 1){
+                    puzzle(size);
+                    puzzleExec = true;
+                } else {
+                    System.out.print("Invalid input! Enter an integer n>1: ");
+                }
+            } catch (InputMismatchException e) {
+                System.out.print("Invalid input! Enter an integer n>1: ");
+                scan.next();
+            }
         }
-        } while(!puzzleStart);
-
-        puzzle(size);
-
         scan.close();
     }
 
@@ -63,9 +65,9 @@ public class eightPuzzV4 {
 
         final int DIM = valueOf(num);
 
-        //Generates a puzzle and a solved version to check it against.
-        ArrayList<eightPuzzle.Tile> tiles = generate(DIM);
-        ArrayList<eightPuzzle.Tile> ansKey = getKey(DIM);
+        // Generates a puzzle and a solved version to check it against.
+        ArrayList<puzzle.Tile> tiles = generate(DIM);
+        ArrayList<puzzle.Tile> ansKey = getKey(DIM);
 
         int[][] board = new int[DIM][DIM];
         int[][] key = new int[DIM][DIM];
@@ -74,7 +76,7 @@ public class eightPuzzV4 {
         update(key, ansKey);
 
         // Instructions
-        System.out.println("Welcome to the " + DIM + " Puzzler! \n\n RULES: \n 1) Move the numbered tiles on the board \n\t until they are in order from 1-" + (DIM * DIM - 1) + ". \n\t It will look like this: ");
+        System.out.println("Welcome to the " + (DIM * DIM - 1) + " Puzzler! \n\n RULES: \n 1) Move the numbered tiles on the board \n\t until they are in order from 1-" + (DIM * DIM - 1) + ". \n\t It will look like this: ");
         printBoard(key);
         System.out.println(" 2) You can only move tiles into an \n\t empty space. You cannot move \n\t diagonally. \n\n 3) Input the number of the tile you \n\t wish to move and press Enter. \n");
         System.out.println(" \n Other commands: \n\t help - show these rules again \n");
@@ -82,8 +84,8 @@ public class eightPuzzV4 {
 
         runGame(tiles, ansKey, board, key, DIM * DIM - 1);
 
-        //Display random witty comment after game is won
-        System.out.println(wit().get(0));
+        // Display random celebration comment after game is won
+        System.out.println(celebrate().get(0));
 
     }
 
@@ -93,7 +95,7 @@ public class eightPuzzV4 {
      * @return  an ArrayList of Tiles which will store the data for each Tile object in the puzzle
      * @see #chkInversions(ArrayList, int)
      */
-    private static ArrayList<eightPuzzle.Tile> generate(int n) {
+    private static ArrayList<puzzle.Tile> generate(int n) {
         ArrayList<int[]> poss = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -103,12 +105,12 @@ public class eightPuzzV4 {
                 poss.add(coord);
             }
         }
-        ArrayList<eightPuzzle.Tile> tiles;
+        ArrayList<puzzle.Tile> tiles;
         do {
             Collections.shuffle(poss);
             tiles = new ArrayList<>();
             for (int z = 0; z < n * n - 1; z++) {
-                tiles.add(new eightPuzzle.Tile(z + 1, n, (poss.get(z))));
+                tiles.add(new puzzle.Tile(z + 1, n, (poss.get(z))));
             }
         } while (!chkInversions(tiles, n));
         return tiles;
@@ -116,61 +118,96 @@ public class eightPuzzV4 {
 
     /**
      * method that determines if the generated puzzle is solvable by calculating inversions
-     * @see <a href="https://www.geeksforgeeks.org/check-instance-15-puzzle-solvable"></a>
      * @param tiles the ArrayList of Tile objects being checked for solvability
      * @param n int used to determine if number of rows is even or odd
      * @return true if number of inversions in puzzle makes it solvable
      */
-    private static boolean chkInversions(ArrayList<eightPuzzle.Tile> tiles, int n) {
+    private static boolean chkInversions(ArrayList<puzzle.Tile> tiles, int n) {
+        // If matrix width is odd
         if (n % 2 != 0) {
-            int q = 0;
-            for (int i = 0; i < tiles.size() - 1; i++)
-                for (int j = i + 1; j < tiles.size(); j++) {
-                    int t = (tiles.get(i)).getSqValue();
-                    int c = (tiles.get(j)).getSqValue();
-                    if (t > c)
-                        q++;
+            int invs = 0;
+            for (int i = 0; i < (tiles.size() - 1); i++)
+                for (int j = i + 1; j < (tiles.size()); j++) {
+                    int tile1SqNum = (tiles.get(i)).getSqNum();
+                    int tile2SqNum = (tiles.get(j)).getSqNum();
+                    if (tile1SqNum > tile2SqNum)
+                        invs++;
                 }
-            return q % 2 == 0;
-        } else {
-            ArrayList<int[]> tempCoords = new ArrayList<>();
-            for (eightPuzzle.Tile t : tiles) {
-                tempCoords.add(t.getCoords());
-            }
-            ArrayList<int[]> tempCompare = new ArrayList<>();
-            for (int j = 0; j < n; j++) {
-                for (int k = 0; k < n; k++) {
-                    int[] i = {j, k};
-                    tempCompare.add(i);
+            /*//test
+            System.out.println(invs);*/
+            return (invs % 2) == 0;
+        } 
+        // If matrix width is even
+        else {
+            // Populate the set of all possible square that can hold a Tile
+            ArrayList<Integer> allSquares = new ArrayList<>();
+
+            /*//test
+            System.out.println("all nums");*/
+            for (int i = 1; i <= (n * n); i++){
+                    allSquares.add((Integer) i);
+
+                    /*//test
+                    System.out.println(i);*/
                 }
+
+            // Populate the set of squares that actually hold a Tile
+            ArrayList<Integer> realSquares = new ArrayList<>();
+            
+            /*//test
+            System.out.println("TILES");*/
+            for (puzzle.Tile t : tiles) {
+                int num = t.getSqNum();
+                realSquares.add((Integer) num);
+                
+                /*//test
+                System.out.println(num);*/
             }
+            
+            // Find the empty square by removing the overlap between realSquares and allSquares
+            int emptySqNum = 0;
+            allSquares.removeAll(realSquares);
+            emptySqNum = allSquares.get(0);
+
+            // Find the x coordinate of the empty square to determine the first condition for solvability
             int emptyX = 0;
-            for (int[] arr : tempCompare) {
-                if (!tempCoords.contains(arr)) {
-                    emptyX = arr[0];
-                }
-            }
-            //if empty spot is an even distance from bottom
-            if ((n - emptyX + 1) % 2 == 0) {
-                int q = 0;
-                for (int i = 0; i < tiles.size() - 1; i++)
-                    for (int j = i + 1; j < tiles.size(); j++) {
-                        int t = (tiles.get(i)).getSqValue();
-                        int c = (tiles.get(j)).getSqValue();
-                        if (t > c)
-                            q++;
-                    }
-                return q % 2 != 0;
+            if (emptySqNum % n != 0){
+                emptyX = emptySqNum/n;
             } else {
-                int q = 0;
-                for (int i = 0; i < tiles.size() - 1; i++)
+                emptyX = (emptySqNum/n - 1);
+            }
+
+            /*//test
+            System.out.println("emptySqNum: " + emptySqNum);
+            System.out.println("emptyX: " + emptyX);*/
+
+            // If empty spot is on an even row from the bottom, return true if there is an odd # of inversions
+            if ((n - emptyX) % 2 == 0) {
+                int invs = 0;
+                for (int i = 0; i < (tiles.size() - 1); i++)
                     for (int j = i + 1; j < tiles.size(); j++) {
-                        int t = (tiles.get(i)).getSqValue();
-                        int c = (tiles.get(j)).getSqValue();
-                        if (t > c)
-                            q++;
+                        int tile1SqNum = (tiles.get(i)).getSqNum();
+                        int tile2SqNum = (tiles.get(j)).getSqNum();
+                        if (tile1SqNum > tile2SqNum)
+                            invs++;
                     }
-                return q % 2 == 0;
+                /*//test
+                System.out.println("EVEN: " + invs);*/
+                return (invs % 2) != 0;
+            } 
+            // If empty spot is on an odd row from the bottom, return true if there is an even # of inversions
+            else {
+                int invs = 0;
+                for (int i = 0; i < (tiles.size() - 1); i++)
+                    for (int j = i + 1; j < tiles.size(); j++) {
+                        int tile1SqNum = (tiles.get(i)).getSqNum();
+                        int tile2SqNum = (tiles.get(j)).getSqNum();
+                        if (tile1SqNum > tile2SqNum)
+                            invs++;
+                    }
+                /*//test
+                System.out.println("ODD: " + invs);*/
+                return (invs % 2) == 0;   
             }
         }
     }
@@ -181,14 +218,14 @@ public class eightPuzzV4 {
      * @return  an ArrayList of Tile objects containing the coordinates they will each have when puzzle is solved
      * @see #solved(ArrayList, ArrayList, int)
      */
-    private static ArrayList<eightPuzzle.Tile> getKey(int n) {
-        ArrayList<eightPuzzle.Tile> tiles = new ArrayList<>();
-        for (int k = 1; k <= n * n - 1; k++) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    int[] c = {i, j};
-                    tiles.add(new eightPuzzle.Tile(k, n, c));
-                    k++;
+    private static ArrayList<puzzle.Tile> getKey(int n) {
+        ArrayList<puzzle.Tile> tiles = new ArrayList<>();
+        for (int num = 1; num <= n * n - 1; num++) {
+            for (int x = 0; x < n; x++) {
+                for (int y = 0; y < n; y++) {
+                    int[] coords = {x, y};
+                    tiles.add(new puzzle.Tile(num, n, coords));
+                    num++;
                 }
             }
         }
@@ -202,14 +239,12 @@ public class eightPuzzV4 {
      * @param tiles ArrayList of Tile objects where coordinates are synced to
      * @see #runGame(ArrayList, ArrayList, int[][], int[][], int)
      */
-    private static void update(int[][] board, ArrayList<eightPuzzle.Tile> tiles) {
-        for (eightPuzzle.Tile t : tiles) {
+    private static void update(int[][] board, ArrayList<puzzle.Tile> tiles) {
+        for (puzzle.Tile t : tiles) {
             board[t.x()][t.y()] = t.getNum();
             t.updateLay(board);
         }
     }
-
-    //FIX: tweak for display of board with n>3.
 
     /**
      * visualize the coordinates of Tile objects on a 2D array
@@ -241,7 +276,7 @@ public class eightPuzzV4 {
      * @param key   int[][] which is used to display how solved puzzle will look
      * @param tileMax   int passed to solved() to limit number of iterations; represents highest Tile number
      */
-    private static void runGame(ArrayList<eightPuzzle.Tile> tiles, ArrayList<eightPuzzle.Tile> ansKey, int[][] board, int[][] key, int tileMax) {
+    private static void runGame(ArrayList<puzzle.Tile> tiles, ArrayList<puzzle.Tile> ansKey, int[][] board, int[][] key, int tileMax) {
         int DIM = (int)sqrt(tileMax+1);
         Scanner readIn = new Scanner(System.in);
         do {
@@ -263,7 +298,7 @@ public class eightPuzzV4 {
             } catch (NumberFormatException e) {
                 switch (input) {
                     case "help":
-                    System.out.println("Welcome to the " + DIM + " Puzzler! \n\n RULES: \n 1) Move the numbered tiles on the board \n\t until they are in order from 1-" + (DIM * DIM - 1) + ". \n\t It will look like this: ");
+                    System.out.println("Welcome to the " + (DIM * DIM - 1) + " Puzzler! \n\n RULES: \n 1) Move the numbered tiles on the board \n\t until they are in order from 1-" + (DIM * DIM - 1) + ". \n\t It will look like this: ");
                     printBoard(key);
                     System.out.println(" 2) You can only move tiles into an \n\t empty space. You cannot move \n\t diagonally. \n\n 3) Input the number of the tile you \n\t wish to move and press Enter. \n");
                     System.out.println(" \n Other commands: \n\t help - show these rules again \n");
@@ -276,7 +311,6 @@ public class eightPuzzV4 {
         } while (!solved(tiles, ansKey, tileMax));
         readIn.close();
     }
-    //Why is i < max and not <= max??
 
     /**
      * checks if one Tile ArrayList matches another; used to check current game board vs answer key
@@ -285,7 +319,7 @@ public class eightPuzzV4 {
      * @param max   int representing total number of Tile objects
      * @return  true if the coordinates stored in curr Tiles and ans Tiles are the same
      */
-    private static boolean solved(ArrayList<eightPuzzle.Tile> curr, ArrayList<eightPuzzle.Tile> ans, int max) {
+    private static boolean solved(ArrayList<puzzle.Tile> curr, ArrayList<puzzle.Tile> ans, int max) {
         int n = 0;
         for (int i = 0; i < max; i++) {
             int x = curr.get(i).x();
@@ -299,17 +333,17 @@ public class eightPuzzV4 {
     }
 
     /**
-     * witty one-liners to celebrate solving the puzzle
-     * @return a random String from ArrayList of witty one-liners
+     * celebration lines to celebrate solving the puzzle
+     * @return a random String from ArrayList of celebratory one-liners
      */
-    private static ArrayList<String> wit() {
+    private static ArrayList<String> celebrate() {
         ArrayList<String> winner = new ArrayList<>();
         winner.add("Winner, winner, chicken dinner! (Unless you're vegetarian, we have tofu options)");
         winner.add("Huzzah!");
         winner.add("Hurrah!");
-        winner.add("Impressive! You're a regular Einstein/Curie/Carver/Andalib!");
+        winner.add("Impressive!");
         winner.add("Felicitations.");
-        winner.add("Noice! (Bonus points if you know which K&P skit this is from)");
+        winner.add("Noice!");
         Collections.shuffle(winner);
         return winner;
     }
