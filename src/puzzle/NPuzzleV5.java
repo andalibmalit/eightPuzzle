@@ -33,7 +33,6 @@ public class NPuzzleV5 {
     public static void main(String[] foo) {
         boolean puzzleExec = false;
         int size = 0;
-        String contd = "N";
         Scanner scan = new Scanner(System.in);
 
         System.out.println("What size puzzle (n * n) would you like to solve?");
@@ -96,21 +95,21 @@ public class NPuzzleV5 {
      * @see #chkInversions(ArrayList, int)
      */
     private static ArrayList<puzzle.Tile> generate(int n) {
-        ArrayList<int[]> poss = new ArrayList<>();
+        ArrayList<int[]> possib = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
                 int[] coord = new int[2];
                 coord[0] = i;
                 coord[1] = j;
-                poss.add(coord);
+                possib.add(coord);
             }
         }
         ArrayList<puzzle.Tile> tiles;
         do {
-            Collections.shuffle(poss);
+            Collections.shuffle(possib);
             tiles = new ArrayList<>();
             for (int z = 0; z < n * n - 1; z++) {
-                tiles.add(new puzzle.Tile(z + 1, n, (poss.get(z))));
+                tiles.add(new puzzle.Tile(z + 1, n, (possib.get(z))));
             }
         } while (!chkInversions(tiles, n));
         return tiles;
@@ -125,43 +124,21 @@ public class NPuzzleV5 {
     private static boolean chkInversions(ArrayList<puzzle.Tile> tiles, int n) {
         // If matrix width is odd
         if (n % 2 != 0) {
-            int invs = 0;
-            for (int i = 0; i < (tiles.size() - 1); i++)
-                for (int j = i + 1; j < (tiles.size()); j++) {
-                    int tile1SqNum = (tiles.get(i)).getSqNum();
-                    int tile2SqNum = (tiles.get(j)).getSqNum();
-                    if (tile1SqNum > tile2SqNum)
-                        invs++;
-                }
-            /*//test
-            System.out.println(invs);*/
-            return (invs % 2) == 0;
+            return inversionCount(tiles) % 2 == 0;
         } 
         // If matrix width is even
         else {
             // Populate the set of all possible square that can hold a Tile
             ArrayList<Integer> allSquares = new ArrayList<>();
-
-            /*//test
-            System.out.println("all nums");*/
             for (int i = 1; i <= (n * n); i++){
                     allSquares.add((Integer) i);
-
-                    /*//test
-                    System.out.println(i);*/
                 }
 
             // Populate the set of squares that actually hold a Tile
             ArrayList<Integer> realSquares = new ArrayList<>();
-            
-            /*//test
-            System.out.println("TILES");*/
             for (puzzle.Tile t : tiles) {
                 int num = t.getSqNum();
                 realSquares.add((Integer) num);
-                
-                /*//test
-                System.out.println(num);*/
             }
             
             // Find the empty square by removing the overlap between realSquares and allSquares
@@ -177,45 +154,41 @@ public class NPuzzleV5 {
                 emptyX = (emptySqNum/n - 1);
             }
 
-            /*//test
-            System.out.println("emptySqNum: " + emptySqNum);
-            System.out.println("emptyX: " + emptyX);*/
-
             // If empty spot is on an even row from the bottom, return true if there is an odd # of inversions
             if ((n - emptyX) % 2 == 0) {
-                int invs = 0;
-                for (int i = 0; i < (tiles.size() - 1); i++)
-                    for (int j = i + 1; j < tiles.size(); j++) {
-                        int tile1SqNum = (tiles.get(i)).getSqNum();
-                        int tile2SqNum = (tiles.get(j)).getSqNum();
-                        if (tile1SqNum > tile2SqNum)
-                            invs++;
-                    }
-                /*//test
-                System.out.println("EVEN: " + invs);*/
-                return (invs % 2) != 0;
+                return inversionCount(tiles) % 2 != 0;
             } 
             // If empty spot is on an odd row from the bottom, return true if there is an even # of inversions
             else {
-                int invs = 0;
-                for (int i = 0; i < (tiles.size() - 1); i++)
-                    for (int j = i + 1; j < tiles.size(); j++) {
-                        int tile1SqNum = (tiles.get(i)).getSqNum();
-                        int tile2SqNum = (tiles.get(j)).getSqNum();
-                        if (tile1SqNum > tile2SqNum)
-                            invs++;
-                    }
-                /*//test
-                System.out.println("ODD: " + invs);*/
-                return (invs % 2) == 0;   
+                return inversionCount(tiles) % 2 == 0;
             }
         }
     }
 
     /**
+     * counts the number of inversions in an ArrayList<Tile> object
+     * @param tiles ArrayList where the count is being implemented
+     * @return integer value of inversion count
+     * @see #chkInversions(ArrayList, int)
+     */
+    private static int inversionCount(ArrayList<puzzle.Tile> tiles) {
+        int invs = 0;
+        for (int i = 0; i < (tiles.size() - 1); i++) {
+            for (int j = i + 1; j < tiles.size(); j++) {
+                int tile1SqNum = (tiles.get(i)).getSqNum();
+                int tile2SqNum = (tiles.get(j)).getSqNum();
+                if (tile1SqNum > tile2SqNum) {
+                    invs++;
+                }
+            }
+        }
+        return invs;
+    }
+
+    /**
      * generates a solved puzzle of size n*n to use as an answer key
      * @param n int dimensions of answer key puzzle
-     * @return  an ArrayList of Tile objects containing the coordinates they will each have when puzzle is solved
+     * @return an ArrayList of Tile objects containing the coordinates they will each have when puzzle is solved
      * @see #solved(ArrayList, ArrayList, int)
      */
     private static ArrayList<puzzle.Tile> getKey(int n) {
@@ -326,8 +299,9 @@ public class NPuzzleV5 {
             int y = curr.get(i).y();
             int compX = ans.get(i).x();
             int compY = ans.get(i).y();
-            if (!(x == compX && y == compY))
+            if (!(x == compX && y == compY)) {
                 n++;
+            }
         }
         return n == 0;
     }
