@@ -22,7 +22,8 @@ The crux of this program is the method **chkInversions()**, which ensures that e
 ### 1-D visualization
 [7, 4, 6, 8, 2, 1, 3, 5]
 
-Inversion count: 18
+*Inversion count: 18*
+---------------------
 
 According to the formula for inversion-based solvability:
 * if matrix width *n* is odd, the puzzle is solvable only if there are an even number of inversions;
